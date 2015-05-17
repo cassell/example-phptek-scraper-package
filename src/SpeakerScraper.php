@@ -3,6 +3,7 @@
 namespace SecretCorporation\Phptek;
 use \Goutte\Client;
 use \Symfony\Component\DomCrawler\Crawler;
+use \SecretCorporation\ExampleCache\Cache;
 
 /**
  * Class SpeakerScraper
@@ -18,17 +19,39 @@ class SpeakerScraper
     private $client;
 
     /**
+     * @var Cache
+     */
+    private $cache;
+
+    /**
      * @param Client $client
      */
-    public function __construct(Client $client)
+    public function __construct(Client $client,Cache $cache)
     {
         $this->setClient($client);
+        $this->setCache($cache);
     }
 
     /**
      * @return array
      */
     public function getSpeakers()
+    {
+        if ($this->getCache()->exists()) {
+            return $this->getCache()->fetch();
+        }
+        else {
+            $speakers = $this->scrapeSpeakers();
+            $this->getCache()->save($speakers);
+            return $speakers;
+        }
+
+    }
+
+    /**
+     * @return array
+     */
+    private function scrapeSpeakers()
     {
         return $this->getClient()->request('GET', self::SPEAKERS_URL)->filter('#speakerlist > div')->each(function (Crawler $node) {
 
@@ -82,6 +105,22 @@ class SpeakerScraper
     private function setClient(Client $client)
     {
         $this->client = $client;
+    }
+
+    /**
+     * @return Cache
+     */
+    public function getCache()
+    {
+        return $this->cache;
+    }
+
+    /**
+     * @param Cache $cache
+     */
+    public function setCache($cache)
+    {
+        $this->cache = $cache;
     }
 
 }

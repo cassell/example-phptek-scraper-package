@@ -13,7 +13,8 @@
   ],
   "require": {
     "php": ">=5.4.0",
-    "fabpot/goutte": "^2.0.4"
+    "fabpot/goutte": "^2.0.4",
+    "secret-company-example/example-cache-package" : "1.0.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^4.1.0"
