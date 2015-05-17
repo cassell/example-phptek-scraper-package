@@ -2,6 +2,7 @@
 
 namespace SecretCorporation\Phptek;
 use \Goutte\Client;
+use \Symfony\Component\DomCrawler\Crawler;
 
 /**
  * Class SpeakerScraper
